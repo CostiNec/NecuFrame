@@ -1,0 +1,24 @@
+{
+  "require": {
+    "maximebf/debugbar": "^1.15",
+    "mongodb/mongodb": "1.2",
+    "imagine/imagine": "^1.2",
+    "mindscape/raygun4php": "^1.8",
+    "ext-SPL": "*",
+    "ext-dom": "*",
+    "ext-simplexml": "*",
+    "ext-mbstring": "*",
+    "ext-zlib": "*",
+    "ext-curl": "*",
+    "colinmollenhour/credis": "^1.11",
+    "mibe/feedwriter": "^1.1",
+    "cboden/ratchet": "^0.4.1",
+    "dg/rss-php": "^1.4",
+    "guzzlehttp/guzzle": "^6.5",
+    "ext-json": "*",
+    "twbs/bootstrap": "4.4.1",
+    "mobiledetect/mobiledetectlib": "^2.8",
+    "symfony/console": "2.6.7",
+    "twig/twig": "^3.0"
+  }
+}
