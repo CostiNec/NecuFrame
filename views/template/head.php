@@ -5,5 +5,6 @@
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-grid.css">
     <link rel="stylesheet" type="text/css" href="/assets/css/bootstrap-reboot.css">
 
-    <script src="/public/assets/js/bootstrap.js/"></script>
+    <script src="/assets/js/jquery.min.js/"></script>
+    <script src="/assets/js/bootstrap.js/"></script>
 </head>
