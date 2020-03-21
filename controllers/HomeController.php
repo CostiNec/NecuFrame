@@ -15,8 +15,6 @@ class HomeController extends Controller
 
     public function index()
     {
-        $this->render('home',[
-            'mere' => 'mere'
-        ]);
+        $this->render('home');
     }
 }
