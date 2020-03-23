@@ -11,7 +11,7 @@ abstract class Model
 {
     protected $data=array();
     protected $columns;
-    protected $primaryKey = 'id';
+    const PRIMARYKEY = 'id';
 
     public function __set($name, $value)
     {
@@ -56,7 +56,7 @@ abstract class Model
         return $instance->getConnection();
     }
 
-    public static function get($key,$value,$columns=[])
+    public static function get($value,$key = self::PRIMARYKEY,$columns=[])
     {
         $modelName = get_called_class();
 
@@ -112,7 +112,7 @@ abstract class Model
         $values = '';
         $parameters = [];
         foreach ($this->data as $key => $data) {
-            if($key != $this->primaryKey) {
+            if($key != self::PRIMARYKEY) {
                 $columns = $columns . ',' . $key;
                 $values = $values . ',?';
                 array_push($parameters,$data);
@@ -140,17 +140,17 @@ abstract class Model
             array_push($dates,$data);
         }
         $updated = substr($updated,1);
-        $sql = $sql . $updated . ' WHERE ' . $this->primaryKey . '=' . '"'.$this->data[$this->primaryKey].'"';
+        $sql = $sql . $updated . ' WHERE ' . self::PRIMARYKEY . '=' . '"'.$this->data[self::PRIMARYKEY].'"';
         $stmt = $conn->prepare($sql);
         $stmt->execute($dates);
     }
 
     public function save()
     {
-        if(!isset($this->data[$this->primaryKey]))
+        if(!isset($this->data[self::PRIMARYKEY]))
         {
             $this->insert();
-        } else if (count(self::get($this->primaryKey,$this->data[$this->primaryKey])) == 0) {
+        } else if (count(self::get(self::PRIMARYKEY,$this->data[self::PRIMARYKEY])) == 0) {
             $this->insert();
         } else {
             $this->update();
@@ -162,7 +162,7 @@ abstract class Model
         $tableName = self::getTableName();
         $conn = self::getConn();
 
-        $sql = 'DELETE FROM '.$tableName.' WHERE '.$this->primaryKey.' = '. $this->data[$this->primaryKey] .';';
+        $sql = 'DELETE FROM '.$tableName.' WHERE '.self::PRIMARYKEY.' = '. $this->data[self::PRIMARYKEY] .';';
         $conn->query($sql);
     }
 

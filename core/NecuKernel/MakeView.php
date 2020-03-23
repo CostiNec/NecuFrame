@@ -2,16 +2,17 @@
 
 namespace core\NecuKernel;
 
+use core\Helper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class MakeModel extends Command
+class MakeView extends Command
 {
-    protected $commandName = 'make:model';
-    protected $commandDescription = "Make a model";
+    protected $commandName = 'make:view';
+    protected $commandDescription = "Make a view";
 
     protected $commandArgumentName = "name";
     protected $commandArgumentDescription = "Who do you want to greet?";
@@ -41,33 +42,37 @@ class MakeModel extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument($this->commandArgumentName);
-
+        $exploadname = explode('.',$name);
+        $mkdir = __DIR__ . '/../../views';
+        foreach ($exploadname as $key => $one) {
+            $mkdir = $mkdir . '/' . $one;
+            if(!is_dir($mkdir) && $key < count($exploadname) - 1) {
+                mkdir($mkdir);
+            }
+        }
         if ($name) {
-            $name = strtolower($name);
-            $name[0] = strtoupper($name);
             $text = "<?php
-namespace models;
-
-use core\Model;
-
 /**
- * const PRIMARYKEY = 'ID';
- * const TABLE = 'table_name';(default is strtolower(model_name).'s' ex Article => articles
+ * @var \$View View
+ * @var \$isDevice MobileDetect
  */
 
-class ". $name ." extends Model
-{
-    protected \$columns = ['YOUR_COLUMNS'];
-}";
+use core\Helper;
+use core\View;
+use Detection\MobileDetect;
+
+?>
+";
         } else {
-            $output->writeln('INSERT A MODEL NAME');
+            $output->writeln('INSERT A VIEW NAME');
         }
 
-        if(file_exists('models/'.$name.'.php')) {
-            $output->writeln('There is already a model with this name :(');
+        if(file_exists($mkdir.'.php')) {
+            $output->writeln('There is already a view with this name :(');
         } else {
-            file_put_contents('models/'.$name.'.php',$text);
-            $output->writeln('The model was successfully created!:)');
+            $output->writeln($mkdir.'.php');
+            file_put_contents($mkdir.'.php',$text);
+            $output->writeln('The view was successfully created!:)');
         }
 
     }

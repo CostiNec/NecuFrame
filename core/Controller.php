@@ -33,4 +33,17 @@ class Controller
         $view = new View();
         $view->includeView($view_name, $variables);
     }
+
+    public function redirect($url)
+    {
+        header('Location: '.$url);
+        die();
+    }
+
+    public function permanentRedirect($url)
+    {
+        header("HTTP/1.1 301 Moved Permanently");
+        header('Location: '.$url);
+        die();
+    }
 }

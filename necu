@@ -2,10 +2,12 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/core/NecuKernel/MakeModel.php';
+require __DIR__ . '/core/NecuKernel/MakeView.php';
 require __DIR__ . '/core/NecuKernel/MakeController.php';
 require __DIR__ . '/core/NecuKernel/StartServer.php';
 
 use core\Helper;
+use core\NecuKernel\MakeView;
 use Symfony\Component\Console\Application;
 use core\NecuKernel\MakeModel;
 use core\NecuKernel\MakeController;
@@ -22,5 +24,8 @@ if($argv[1] == "make:model")
     $application->add(new MakeModel());
 if($argv[1] == "make:controller")
     $application->add(new MakeController());
+if($argv[1] == "make:view")
+    $application->add(new MakeView());
+
 
 $application->run();
