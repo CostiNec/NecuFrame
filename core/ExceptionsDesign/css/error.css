@@ -1,0 +1,12 @@
+.row {
+    display: grid;
+    grid-template-areas: 'col1 col2';
+}
+
+.col1 {
+    grid-area: col1;
+}
+
+.col2 {
+    grid-area: col2;
+}
