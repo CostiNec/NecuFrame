@@ -4,7 +4,7 @@ namespace controllers;
 
 use core\Controller;
 use core\Helper;
-use models\Article;
+use models\Example;
 
 class HomeController extends Controller
 {
