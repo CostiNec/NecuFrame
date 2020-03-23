@@ -3,7 +3,7 @@
 
 namespace core;
 
-
+use core\View;
 use Throwable;
 
 class Exception extends \Exception
@@ -24,13 +24,18 @@ class Exception extends \Exception
 
     public function render()
     {
+        $View = new View();
         http_response_code($this->getCode());
+
+        $parameters = [
+            'errorCode' => $this->getCode(),
+            'message' => $this->getMessage()
+        ];
 
         if($this->json) {
             echo json_encode(['message' => $this->getMessage()]);
         } else {
-            echo $this->getMessage();
-
+            $View->includeErrorView('error',$parameters);
         }
     }
 }

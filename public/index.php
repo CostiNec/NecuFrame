@@ -24,12 +24,21 @@ try {
 
     $use = '../controllers/'.$dataController['controller'].'.php';
 
-    require $use;
-    $controller = 'controllers\\'.$dataController['controller'];
+    if(file_exists($use)) {
+        require $use;
+        $controller = 'controllers\\'.$dataController['controller'];
 
-    $command = new $controller($dataController);
+        $command = new $controller($dataController);
 
-    call_user_func(array($command, $dataController['method']),$dataController['request']);
+        if(method_exists($command, $dataController['method']))
+            call_user_func(array($command, $dataController['method']),$dataController['request']);
+        else {
+            throw (new CatchError('The method '. $dataController['method'] .' doesn\'t exist '. $dataController['controller'] .'! :(',500));
+        }
+    } else {
+        throw (new CatchError('The controller '. $dataController['controller'] .' doesn\'t exist! :(',500));
+    }
+
 } catch (CatchError $catchError) {
     $catchError->render();
 }

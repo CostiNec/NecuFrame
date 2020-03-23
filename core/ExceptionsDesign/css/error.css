@@ -1,12 +1,34 @@
 .row {
     display: grid;
     grid-template-areas: 'col1 col2';
+    grid-template-columns: 1fr 1fr;
+}
+
+.error-position {
+    position: absolute;
+    top: 40%;
+    left: 15%;
+    max-width: 40%;
+}
+
+img {
+    width: 300px;
+    position: absolute;
+    right: 20%;
+    top: 20%;
 }
 
 .col1 {
     grid-area: col1;
+    height: 100%;
 }
 
 .col2 {
     grid-area: col2;
+    height: 100%;
+}
+
+.error-position p {
+    color: #4e4e4e;
+    font-size: 1.5rem;
 }

@@ -128,7 +128,7 @@ class Route
             }
         }
         if(!count($this->_GET) && !count($this->_POST)) {
-            throw(new Exception('404 Not found',404));
+            throw(new Exception('Page Not Found :(',404));
         }
 
     }
