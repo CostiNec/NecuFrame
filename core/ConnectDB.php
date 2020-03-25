@@ -18,6 +18,8 @@ class ConnectDB {
         try {
             $db = new PDO('mysql:host='.$config['HOST'].';port='.$config['PORT'].';dbname='.$config['DATABASE'], $config['USERNAME'], $config['PASSWORD']);
             $this->conn = $db;
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
         } catch (PDOException $e) {
             print "Error!: " . $e->getMessage() . "<br/>";
             die();
