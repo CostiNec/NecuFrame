@@ -10,5 +10,5 @@
             <p><?= $errorCode ?></p>
             <p><?= $message ?></p>
         </div>
-        <img src="assets/img/errorImage.jpg">
+        <img src="<?= (is_file('assets/img/errorImage.png')) ? 'assets/img/errorImage.png' : 'https://necuframe.com/assets/img/errorImage.png' ?>">
 </div>
