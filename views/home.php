@@ -61,7 +61,7 @@ $View->includeView('template.head');
             <div class="col-lg-8 mx-auto">
                 <h2>Contact us</h2>
                 <p class="lead">email: cnecula20@yahoo.ro</p>
-                <p class="lead">facebook: https://www.facebook.com/constantin.necula.58</p>
+                <p class="lead" style="    overflow-wrap: break-word;">facebook: https://www.facebook.com/constantin.necula.58</p>
             </div>
         </div>
     </div>
