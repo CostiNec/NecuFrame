@@ -6,6 +6,7 @@ use core\ConnectDB;
 use PDOException;
 use PDO;
 use Symfony\Component\VarDumper\VarDumper;
+use core\Exception as CatchError;
 
 abstract class Model
 {
@@ -20,8 +21,7 @@ abstract class Model
         if(in_array($name, $array))
             $this->data[$name] = $value;
         else {
-            echo 'Column "'.$name .'" doesn\'t exists in your model';
-            die();
+            throw (new CatchError('Column "'.$name .'" doesn\'t exists in your model',500));
         }
     }
 
@@ -31,8 +31,7 @@ abstract class Model
         if(in_array($name, $array)) {
             return $this->data[$name];
         } else {
-            echo 'Column "'.$name .'" doesn\'t exists in your model';
-            die();
+            throw (new CatchError('Column "'.$name .'" doesn\'t exists in your model',500));
         }
     }
 
@@ -41,7 +40,7 @@ abstract class Model
         $modelName = get_called_class();
 
         if(defined($modelName.'::TABLE')) {
-            $tableName = $modelName::$TABLE;
+            $tableName = $modelName::TABLE;
         } else {
             $modelName = explode('\\',$modelName)[1];
             $tableName = strtolower($modelName).'s';
@@ -157,13 +156,23 @@ abstract class Model
         }
     }
 
-    public function delete()
+    public static function delete($field, $statement = null, $value = null)
     {
         $tableName = self::getTableName();
-        $conn = self::getConn();
 
-        $sql = 'DELETE FROM '.$tableName.' WHERE '.self::PRIMARYKEY.' = '. $this->data[self::PRIMARYKEY] .';';
-        $conn->query($sql);
+        if($value == null && $statement == null) {
+            $value = $field;
+            $field = self::PRIMARYKEY;
+            $statement = '=';
+        }
+        else if($value == null) {
+            $value = $statement;
+            $statement = '=';
+        }
+
+        $sql = 'DELETE FROM '.$tableName.' WHERE '.$field.' '.$statement.'  ?;';
+
+        self::customPrepareQuery($sql,[$value]);
     }
 
     public static function customQuery($query)
