@@ -1,7 +1,6 @@
 {
   "require": {
     "maximebf/debugbar": "^1.15",
-    "mongodb/mongodb": "1.2",
     "imagine/imagine": "^1.2",
     "mindscape/raygun4php": "^1.8",
     "ext-SPL": "*",
