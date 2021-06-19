@@ -80,6 +80,8 @@ class Route
         if(!self::checkUrl($link))
             return false;
 
+        $this->request = array_merge($this->request,$_GET);
+
         array_push($this->_GET,[
             'url' => $link,
             'controller' => $controller,
@@ -94,6 +96,8 @@ class Route
         if(!self::checkUrl($link))
             return false;
 
+        $this->request = array_merge($this->request,$_POST);
+
         array_push($this->_POST,[
             'url' => $link,
             'controller' => $controller,
@@ -106,6 +110,9 @@ class Route
     public function execute()
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_POST['csrf_token'] != $_SESSION['csrf_token']) {
+                throw new Exception('Csrf invalid',401);
+            }
             foreach ($this->_POST as $one) {
                 if($one['request_method'] === $_SERVER['REQUEST_METHOD']) {
                     return $one;

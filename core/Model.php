@@ -12,7 +12,15 @@ abstract class Model
 {
     protected $data=array();
     protected $columns;
+    protected $extra=array();
     const PRIMARYKEY = 'id';
+
+    public function __construct($data = [])
+    {
+        if (!empty($data)) {
+            $this->data = $data;
+        }
+    }
 
     public function __set($name, $value)
     {
@@ -26,6 +34,9 @@ abstract class Model
     }
 
     public function __get($name) {
+        if (!empty($this->$name)) {
+            return $this->$name;
+        }
         $array = array_map('strtolower', $this->columns);
         $name = strtolower($name);
         if(in_array($name, $array)) {
@@ -53,6 +64,17 @@ abstract class Model
     {
         $instance = ConnectDb::getInstance();
         return $instance->getConnection();
+    }
+
+    public static function find($value, $field = self::PRIMARYKEY)
+    {
+        $models = self::where($field,$value);
+
+        if (!count($models)) {
+            return null;
+        }
+
+        return $models[0];
     }
 
     public static function get($value,$key = self::PRIMARYKEY,$columns=[])
@@ -111,7 +133,7 @@ abstract class Model
         $values = '';
         $parameters = [];
         foreach ($this->data as $key => $data) {
-            if($key != self::PRIMARYKEY) {
+            if($key != self::PRIMARYKEY && !in_array($key,$this->extra)) {
                 $columns = $columns . ',' . $key;
                 $values = $values . ',?';
                 array_push($parameters,$data);
@@ -123,7 +145,9 @@ abstract class Model
         $sql = $sql . $columns . ') VALUES (' . $values . ');';
 
         $stmt= $conn->prepare($sql);
-        $stmt->execute($parameters);
+        $response = $stmt->execute($parameters);
+        $this->{self::PRIMARYKEY} = $conn->lastInsertId();
+
     }
 
     public function update()
@@ -135,11 +159,14 @@ abstract class Model
         $updated = '';
         $dates = [];
         foreach ($this->data as $key => $data) {
-            $updated = $updated . ','. $key .' = ?';
-            array_push($dates,$data);
+            if (!in_array($key,$this->extra)) {
+                $updated = $updated . ','. $key .' = ?';
+                array_push($dates,$data);
+            }
         }
         $updated = substr($updated,1);
         $sql = $sql . $updated . ' WHERE ' . self::PRIMARYKEY . '=' . '"'.$this->data[self::PRIMARYKEY].'"';
+
         $stmt = $conn->prepare($sql);
         $stmt->execute($dates);
     }
@@ -149,14 +176,19 @@ abstract class Model
         if(!isset($this->data[self::PRIMARYKEY]))
         {
             $this->insert();
-        } else if (count(self::get(self::PRIMARYKEY,$this->data[self::PRIMARYKEY])) == 0) {
+        } else if (count(self::where(self::PRIMARYKEY,$this->{self::PRIMARYKEY})) == 0) {
             $this->insert();
         } else {
             $this->update();
         }
     }
 
-    public static function delete($field, $statement = null, $value = null)
+    public function delete()
+    {
+        return self::deleteByField(self::PRIMARYKEY,$this->{self::PRIMARYKEY});
+    }
+
+    public static function deleteByField($field, $statement = null, $value = null)
     {
         $tableName = self::getTableName();
 
@@ -172,7 +204,49 @@ abstract class Model
 
         $sql = 'DELETE FROM '.$tableName.' WHERE '.$field.' '.$statement.'  ?;';
 
-        self::customPrepareQuery($sql,[$value]);
+        return self::customPrepareQuery($sql,[$value]);
+    }
+
+    public static function where($field, $statement = null, $value = null)
+    {
+        $tableName = self::getTableName();
+
+        if($value == null && $statement == null) {
+            $value = $field;
+            $field = self::PRIMARYKEY;
+            $statement = '=';
+        }
+        else if($value == null) {
+            $value = $statement;
+            $statement = '=';
+        }
+
+        $sql = 'SELECT * FROM '.$tableName.' WHERE '.$field.' '.$statement.'  ?;';
+
+        $responses = self::customPrepareQuery($sql,[$value])->fetchAll(PDO::FETCH_ASSOC);
+
+        if (empty($responses)) {
+            return null;
+        }
+
+        $modelName = get_called_class();
+
+        $modelName = str_replace('/','\\',$modelName);
+
+        $models = [];
+
+
+        foreach ($responses as $response) {
+            $model = new $modelName($response);
+
+            foreach ($response as $key => $one) {
+                $model->$key = $one;
+            }
+
+            $models[] = $model;
+        }
+
+        return $models;
     }
 
     public static function customQuery($query)

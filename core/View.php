@@ -3,6 +3,7 @@
 namespace core;
 
 use Detection\MobileDetect;
+use providers\ApplicationProvider;
 use Symfony\Component\VarDumper\VarDumper;
 
 if(file_exists(__DIR__.'/../vendor/mobiledetect/mobiledetectlib/namespaced/Detection/MobileDetect.php')) {
@@ -24,6 +25,7 @@ class View
             $file = mb_substr($file,0,-1);
         }
         extract($variables);
+        extract( (new ApplicationProvider())->handle() );
         if (file_exists(__DIR__ . '/../views/' . $file . '.php')) {
             include(__DIR__ . '/../views/' . $file . '.php');
         } else {

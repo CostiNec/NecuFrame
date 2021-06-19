@@ -37,5 +37,7 @@ class Exception extends \Exception
         } else {
             $View->includeErrorView('error',$parameters);
         }
+
+        die();
     }
 }
