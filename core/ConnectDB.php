@@ -16,7 +16,8 @@ class ConnectDB {
         include(__DIR__ . "/../config.php");
 
         try {
-            $db = new PDO('mysql:host='.$config['HOST'].';port='.$config['PORT'].';dbname='.$config['DATABASE'], $config['USERNAME'], $config['PASSWORD']);
+            $db = new PDO('mysql:host='.$config['HOST'].';port='.$config['PORT'].';dbname='.$config['DATABASE'],
+                $config['USERNAME'], $config['PASSWORD']);
             $this->conn = $db;
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
